@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piyush Rana — Visual Storyteller</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --clay:    #c4622d;
+    --ochre:   #d4933a;
+    --cream:   #f5ede0;
+    --parchment: #ede3d3;
+    --forest:  #2d4a2f;
+    --moss:    #4a6741;
+    --bark:    #3b2a1a;
+    --mist:    #b8c9b0;
+    --ink:     #1e1209;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: .4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(245,237,224,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(60,40,20,.1);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--forest);
+    letter-spacing: .02em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: .82rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--bark);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .75;
+    transition: opacity .2s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--clay); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    background: var(--forest);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 6rem 4rem 5rem;
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
+  }
+  .hero-left::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 70%, rgba(196,98,45,.25) 0%, transparent 60%);
+  }
+  .hero-tag {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    color: var(--mist);
+    margin-bottom: 1.2rem;
+    position: relative;
+  }
+  .hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.05;
+    position: relative;
+  }
+  .hero-name em {
+    font-style: italic;
+    color: var(--ochre);
+  }
+  .hero-descriptor {
+    margin-top: 1.5rem;
+    font-size: .95rem;
+    color: var(--mist);
+    line-height: 1.7;
+    max-width: 320px;
+    position: relative;
+  }
+  .hero-cta {
+    margin-top: 2.5rem;
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    position: relative;
+  }
+  .btn {
+    display: inline-block;
+    padding: .8rem 2rem;
+    border-radius: 100px;
+    font-size: .85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+  .btn-primary { background: var(--clay); color: #fff; }
+  .btn-outline { background: transparent; color: var(--cream); border: 1.5px solid rgba(245,237,224,.4); }
+
+  .hero-right {
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 8rem 4rem 5rem 6rem;
+    position: relative;
+  }
+  .hero-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-style: italic;
+    color: var(--bark);
+    line-height: 1.6;
+    max-width: 380px;
+    border-left: 3px solid var(--clay);
+    padding-left: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .pill {
+    padding: .4rem 1rem;
+    border-radius: 100px;
+    font-size: .78rem;
+    font-weight: 500;
+    letter-spacing: .04em;
+    background: var(--parchment);
+    color: var(--forest);
+    border: 1px solid rgba(45,74,47,.2);
+  }
+  .hero-deco {
+    position: absolute;
+    right: 3rem; bottom: 3rem;
+    font-family: 'Caveat', cursive;
+    font-size: 5rem;
+    color: var(--moss);
+    opacity: .12;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: 6rem 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 3rem; }
+  .section-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--clay);
+    margin-bottom: .5rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--forest);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .section-sub {
+    font-size: .95rem;
+    color: var(--bark);
+    opacity: .7;
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 3.5rem;
+  }
+  .divider {
+    width: 48px; height: 3px;
+    background: var(--ochre);
+    border-radius: 2px;
+    margin: 1.2rem 0 2rem;
+  }
+
+  /* ── ABOUT ── */
+  #about { background: var(--parchment); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .about-text p {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--bark);
+    margin-bottom: 1.2rem;
+    opacity: .85;
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .stat-card {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(60,40,20,.08);
+    transition: transform .25s;
+  }
+  .stat-card:hover { transform: translateY(-4px); }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--clay);
+  }
+  .stat-label {
+    font-size: .82rem;
+    color: var(--forest);
+    font-weight: 500;
+    margin-top: .25rem;
+    opacity: .75;
+  }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--cream); }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--parchment);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid rgba(60,40,20,.08);
+    transition: transform .25s, box-shadow .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--clay), var(--ochre));
+    border-radius: 20px 20px 0 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s;
+  }
+  .project-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(60,40,20,.1); }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-year {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--clay);
+    margin-bottom: .5rem;
+  }
+  .project-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--forest);
+    margin-bottom: .7rem;
+    line-height: 1.3;
+  }
+  .project-desc {
+    font-size: .87rem;
+    color: var(--bark);
+    opacity: .75;
+    line-height: 1.65;
+  }
+  .project-tag {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: .3rem .9rem;
+    border-radius: 100px;
+    font-size: .75rem;
+    font-weight: 500;
+    background: rgba(45,74,47,.1);
+    color: var(--forest);
+  }
+
+  /* ── GALLERY ── */
+  #gallery { background: var(--forest); }
+  #gallery .section-title { color: var(--cream); }
+  #gallery .section-label { color: var(--ochre); }
+  #gallery .section-sub { color: var(--mist); }
+  #gallery .divider { background: var(--clay); }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .gallery-item {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background: rgba(255,255,255,.07);
+    border: 1.5px dashed rgba(245,237,224,.2);
+    cursor: pointer;
+    transition: transform .25s, border-color .25s;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    gap: .5rem;
+  }
+  .gallery-item:hover { transform: scale(1.02); border-color: var(--ochre); }
+  .gallery-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    position: absolute; inset: 0;
+    border-radius: 12px;
+  }
+  .gallery-item .gallery-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 60%);
+    border-radius: 12px;
+    opacity: 0;
+    transition: opacity .3s;
+    display: flex; align-items: flex-end;
+    padding: 1rem;
+  }
+  .gallery-item:hover .gallery-overlay { opacity: 1; }
+  .gallery-overlay span {
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 500;
+  }
+  .gallery-empty-icon {
+    font-size: 2rem;
+    opacity: .35;
+  }
+  .gallery-empty-text {
+    font-size: .75rem;
+    color: var(--mist);
+    opacity: .5;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 2px dashed rgba(245,237,224,.25);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .25s, background .25s;
+    background: rgba(255,255,255,.04);
+  }
+  .upload-zone:hover {
+    border-color: var(--ochre);
+    background: rgba(212,147,58,.06);
+  }
+  .upload-zone-icon { font-size: 2.5rem; margin-bottom: .8rem; }
+  .upload-zone p {
+    color: var(--mist);
+    font-size: .9rem;
+    margin-bottom: .5rem;
+  }
+  .upload-zone span {
+    font-size: .78rem;
+    color: var(--mist);
+    opacity: .55;
+  }
+  #photo-input { display: none; }
+  .gallery-caption-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.85);
+    z-index: 500;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 1.2rem;
+  }
+  .gallery-caption-modal.open { display: flex; }
+  .gallery-caption-modal img {
+    max-width: 85vw; max-height: 80vh;
+    border-radius: 12px;
+    object-fit: contain;
+  }
+  .gallery-caption-modal input {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 8px;
+    color: #fff;
+    padding: .6rem 1.2rem;
+    font-size: .9rem;
+    width: 360px;
+    max-width: 90vw;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .modal-btns { display: flex; gap: .8rem; }
+  .modal-close {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: none; border: none;
+    color: #fff; font-size: 2rem;
+    cursor: pointer; opacity: .6;
+    transition: opacity .2s;
+  }
+  .modal-close:hover { opacity: 1; }
+
+  /* ── SKILLS & AREAS ── */
+  #skills { background: var(--parchment); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+  .skills-col h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--forest);
+    margin-bottom: 1.2rem;
+    padding-bottom: .7rem;
+    border-bottom: 1px solid rgba(60,40,20,.12);
+  }
+  .skill-list { list-style: none; }
+  .skill-list li {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .65rem 0;
+    border-bottom: 1px solid rgba(60,40,20,.06);
+    font-size: .9rem;
+    color: var(--bark);
+  }
+  .skill-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-clay { background: var(--clay); }
+  .dot-moss { background: var(--moss); }
+  .dot-ochre { background: var(--ochre); }
+
+  .awards-list { list-style: none; }
+  .awards-list li {
+    padding: .9rem 0;
+    border-bottom: 1px solid rgba(60,40,20,.06);
+  }
+  .award-title {
+    font-weight: 500;
+    font-size: .92rem;
+    color: var(--forest);
+    margin-bottom: .2rem;
+  }
+  .award-sub {
+    font-size: .8rem;
+    color: var(--bark);
+    opacity: .65;
+  }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--bark); }
+  #contact .section-title { color: var(--cream); }
+  #contact .section-label { color: var(--ochre); }
+  #contact .section-sub { color: var(--mist); opacity: .7; }
+  #contact .divider { background: var(--clay); }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+  .contact-item {
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .contact-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: rgba(245,237,224,.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    border: 1px solid rgba(245,237,224,.12);
+  }
+  .contact-detail a,
+  .contact-detail span {
+    display: block;
+    color: var(--cream);
+    font-size: .92rem;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .contact-detail a:hover { color: var(--ochre); }
+  .contact-detail small {
+    font-size: .75rem;
+    color: var(--mist);
+    opacity: .55;
+  }
+
+  .contact-right {
+    background: rgba(245,237,224,.05);
+    border: 1px solid rgba(245,237,224,.1);
+    border-radius: 20px;
+    padding: 2.5rem;
+  }
+  .contact-right p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+  .contact-right .attr {
+    font-size: .82rem;
+    color: var(--ochre);
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    text-align: center;
+    padding: 2rem;
+    font-size: .78rem;
+    color: rgba(255,255,255,.25);
+    letter-spacing: .04em;
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { clip-path: none; padding: 7rem 2rem 3rem; }
+    .hero-right { padding: 3rem 2rem; }
+    .about-grid, .contact-grid, .skills-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .projects-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+    .container { padding: 0 1.5rem; }
+  }
+  @media (max-width: 600px) {
+    .projects-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Piyush Rana</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag">✦ Visual Storyteller &amp; Community Contributor</div>
+    <h1 class="hero-name">Piyush<br><em>Rana</em></h1>
+    <p class="hero-descriptor">15-year-old student, filmmaker, and environmental advocate rooted in the Tharu community of Uttarakhand.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Work</a>
+      <a href="#gallery" class="btn btn-outline">My Gallery</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-quote">
+      "Strive not to be a success, but rather to be of value."
+    </div>
+    <div class="hero-pills">
+      <span class="pill">🎬 Filmmaking</span>
+      <span class="pill">🌿 Biodiversity</span>
+      <span class="pill">📚 Community</span>
+      <span class="pill">🏞️ Conservation</span>
+      <span class="pill">🎭 Culture</span>
+      <span class="pill">🧠 Mental Health</span>
+      <span class="pill">🌏 Global Exchange</span>
+    </div>
+    <div class="hero-deco">PR</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text fade-up">
+        <div class="section-label">About me</div>
+        <h2 class="section-title">Rooted in community,<br>reaching outward.</h2>
+        <div class="divider"></div>
+        <p>Piyush Rana is a 15-year-old student at Nanakmatta Public School, Uttarakhand, belonging to the indigenous Tharu tribe of U.S. Nagar. He believes meaningful learning comes from people and the environment around him.</p>
+        <p>His work spans visual storytelling, environmental action, cultural preservation, and social advocacy — always grounded in the idea of being of service to his community rather than chasing recognition alone.</p>
+        <p>From documenting biodiversity in the field to co-managing a creative Instagram platform, Piyush weaves curiosity and commitment into everything he does.</p>
+      </div>
+      <div class="about-stats fade-up" style="transition-delay:.15s">
+        <div class="stat-card">
+          <div class="stat-num">6+</div>
+          <div class="stat-label">Film & Video Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Years City Nature Challenge</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Community Book Fairs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">2</div>
+          <div class="stat-label">Countries — Cultural Exchange</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label fade-up">What I've made</div>
+    <h2 class="section-title fade-up">Projects &amp; Work</h2>
+    <div class="divider fade-up"></div>
+    <p class="section-sub fade-up">A selection of filmmaking, field work, and community initiatives that define how I engage with the world.</p>
+
+    <div class="projects-grid">
+      <div class="project-card fade-up">
+        <div class="project-year">2023</div>
+        <div class="project-title">Document of Documenting Biodiversity</div>
+        <p class="project-desc">A meta-documentary capturing the process of recording and understanding local biodiversity in Uttarakhand's natural landscape.</p>
+        <span class="project-tag">🎬 Film</span>
+      </div>
+      <div class="project-card fade-up" style="transition-delay:.07s">
+        <div class="project-year">2022</div>
+        <div class="project-title">City Nature Challenge Video</div>
+        <p class="project-desc">Video documentation of nature observation efforts during the global City Nature Challenge campaign — shot in the field.</p>
+        <span class="project-tag">🌿 Environment</span>
+      </div>
+      <div class="project-card fade-up" style="transition-delay:.14s">
+        <div class="project-year">Oct 2024</div>
+        <div class="project-title">Shehar Pathak Memorial Lecture</div>
+        <p class="project-desc">Full event documentation through video of the memorial lecture — capturing intellectual discourse for archival purposes.</p>
+        <span class="project-tag">📹 Documentation</span>
+      </div>
+      <div class="project-card fade-up" style="transition-delay:.0s">
+        <div class="project-year">2025</div>
+        <div class="project-title">Local Science Fair Video</div>
+        <p class="project-desc">Behind-the-scenes and process documentation of science fair activities at Nanakmatta Public School over several years.</p>
+        <span class="project-tag">🔬 Science</span>
+      </div>
+      <div class="project-card fade-up" style="transition-delay:.07s">
+        <div class="project-year">2025</div>
+        <div class="project-title">Unspoken Thoughts</div>
+        <p class="project-desc">A short film on mental health made as part of the <em>Cinema in School</em> initiative — giving voice to conversations that often go unheard.</p>
+        <span class="project-tag">🧠 Mental Health Film</span>
+      </div>
+      <div class="project-card fade-up" style="transition-delay:.14s">
+        <div class="project-year">Oct 2025</div>
+        <div class="project-title">Wipro Earthian Documentary</div>
+        <p class="project-desc">Documentary chronicling the full journey through the Wipro Earthian environmental education program — from field work to regional recognition.</p>
+        <span class="project-tag">🌍 Documentary</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="container">
+    <div class="section-label fade-up">My Gallery</div>
+    <h2 class="section-title fade-up">Photos from the Field</h2>
+    <div class="divider fade-up"></div>
+    <p class="section-sub fade-up">Upload your own photos — from field trips, projects, events, or anything you'd like to showcase.</p>
+
+    <div class="gallery-grid" id="gallery-grid">
+      <!-- Slots filled by JS -->
+    </div>
+
+    <!-- Upload Zone -->
+    <div class="upload-zone fade-up" id="upload-zone" onclick="document.getElementById('photo-input').click()">
+      <div class="upload-zone-icon">📷</div>
+      <p>Click to add your photos</p>
+      <span>JPG, PNG, WEBP · Max 10MB each · Stored locally in your browser</span>
+    </div>
+    <input type="file" id="photo-input" accept="image/*" multiple>
+  </div>
+</section>
+
+<!-- Caption Modal -->
+<div class="gallery-caption-modal" id="caption-modal">
+  <button class="modal-close" id="modal-close">×</button>
+  <img id="modal-preview" src="" alt="">
+  <input type="text" id="caption-input" placeholder="Add a caption (optional)…" maxlength="80">
+  <div class="modal-btns">
+    <button class="btn btn-primary" id="save-photo-btn">Save to Gallery</button>
+    <button class="btn btn-outline" style="color:#aaa;border-color:rgba(255,255,255,.2)" id="cancel-btn">Cancel</button>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="skills-grid">
+      <div class="fade-up">
+        <div class="section-label">What I bring</div>
+        <h2 class="section-title">Strengths &amp;<br>Areas of Growth</h2>
+        <div class="divider"></div>
+        <ul class="skill-list">
+          <li><span class="skill-dot dot-clay"></span> Curiosity and willingness to learn</li>
+          <li><span class="skill-dot dot-clay"></span> Communication and public speaking</li>
+          <li><span class="skill-dot dot-moss"></span> Creative thinking and visual direction</li>
+          <li><span class="skill-dot dot-moss"></span> Camera handling and video documentation</li>
+          <li><span class="skill-dot dot-ochre"></span> Team collaboration and peer support</li>
+          <li><span class="skill-dot dot-ochre"></span> Bilingual (Hindi / English) communication</li>
+        </ul>
+        <div style="margin-top:2rem">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--forest);margin-bottom:.8rem">Working On</h3>
+          <ul class="skill-list">
+            <li><span class="skill-dot" style="background:#ccc"></span> Time management across responsibilities</li>
+            <li><span class="skill-dot" style="background:#ccc"></span> Leadership in larger team workflows</li>
+          </ul>
+        </div>
+      </div>
+      <div class="fade-up" style="transition-delay:.15s">
+        <div class="section-label">Recognition</div>
+        <h2 class="section-title">Certificates &amp;<br>Awards</h2>
+        <div class="divider"></div>
+        <ul class="awards-list">
+          <li>
+            <div class="award-title">🏆 Regional Level Award — Wipro Earthian</div>
+            <div class="award-sub">2025–26 · Biodiversity Theme</div>
+          </li>
+          <li>
+            <div class="award-title">🗳️ Digital Democracy Cohort</div>
+            <div class="award-sub">Batch 10 · 2024</div>
+          </li>
+          <li>
+            <div class="award-title">🌿 City Nature Challenge</div>
+            <div class="award-sub">Participant since 2022 · Annual</div>
+          </li>
+          <li>
+            <div class="award-title">🔬 Bal Vigyan Khojshala Science Fairs</div>
+            <div class="award-sub">Active participant 2019–2025</div>
+          </li>
+          <li>
+            <div class="award-title">🌏 India–Mexico Cultural Exchange</div>
+            <div class="award-sub">Tharu–Coca communities · 2 years · Exhibitions in Delhi &amp; Mexico</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="fade-up">
+        <div class="section-label">Get in touch</div>
+        <h2 class="section-title">Let's connect.</h2>
+        <div class="divider"></div>
+        <p class="section-sub">Whether it's a collaboration, a conversation, or just curiosity — reach out.</p>
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">📱</div>
+            <div class="contact-detail">
+              <a href="tel:+916396658042">+91 63966 58042</a>
+              <small>Mobile</small>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">💼</div>
+            <div class="contact-detail">
+              <a href="https://www.linkedin.com/in/piyush-rana-6a7472363" target="_blank" rel="noopener">linkedin.com/in/piyush-rana-6a7472363</a>
+              <small>LinkedIn Profile</small>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div class="contact-detail">
+              <span>Nanakmatta, Uttarakhand, India</span>
+              <small>Nanakmatta Public School</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-right fade-up" style="transition-delay:.15s">
+        <p>"Strive not to be a success, but rather to be of value."</p>
+        <div class="attr">— Albert Einstein, Piyush's guiding philosophy</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2025 Piyush Rana · Nanakmatta, Uttarakhand · Built with purpose.
+</footer>
+
+<script>
+  // ── FADE UP OBSERVER ──
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  fadeEls.forEach(el => obs.observe(el));
+
+  // ── GALLERY SYSTEM ──
+  const STORAGE_KEY = 'piyush_gallery_v1';
+  let photos = [];
+  let pendingFile = null;
+
+  function loadPhotos() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      photos = raw ? JSON.parse(raw) : [];
+    } catch { photos = []; }
+  }
+
+  function savePhotos() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(photos)); } catch(e) {
+      alert('Storage full — try removing some photos first.');
+    }
+  }
+
+  function renderGallery() {
+    const grid = document.getElementById('gallery-grid');
+    grid.innerHTML = '';
+
+    if (photos.length === 0) {
+      for (let i = 0; i < 4; i++) {
+        const el = document.createElement('div');
+        el.className = 'gallery-item';
+        el.innerHTML = `<div class="gallery-empty-icon">🌿</div><div class="gallery-empty-text">Add a photo</div>`;
+        el.onclick = () => document.getElementById('photo-input').click();
+        grid.appendChild(el);
+      }
+      return;
+    }
+
+    photos.forEach((p, idx) => {
+      const el = document.createElement('div');
+      el.className = 'gallery-item';
+      el.innerHTML = `
+        <img src="${p.src}" alt="${p.caption || ''}">
+        <div class="gallery-overlay">
+          <span>${p.caption || ''}</span>
+        </div>`;
+      el.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        if (confirm('Remove this photo?')) {
+          photos.splice(idx, 1);
+          savePhotos();
+          renderGallery();
+        }
+      });
+      grid.appendChild(el);
+    });
+
+    // Always add a small "+" tile at end if < 20 photos
+    if (photos.length < 20) {
+      const add = document.createElement('div');
+      add.className = 'gallery-item';
+      add.innerHTML = `<div class="gallery-empty-icon" style="font-size:1.6rem;opacity:.5">＋</div><div class="gallery-empty-text">Add more</div>`;
+      add.onclick = () => document.getElementById('photo-input').click();
+      grid.appendChild(add);
+    }
+  }
+
+  // File input handler
+  document.getElementById('photo-input').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    processNextFile(files, 0);
+    this.value = '';
+  });
+
+  function processNextFile(files, index) {
+    if (index >= files.length) return;
+    const file = files[index];
+    if (!file.type.startsWith('image/')) { processNextFile(files, index + 1); return; }
+    if (file.size > 10 * 1024 * 1024) { alert(`"${file.name}" is over 10MB — skipped.`); processNextFile(files, index + 1); return; }
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      pendingFile = { src: ev.target.result, file, nextIndex: index + 1, allFiles: files };
+      showModal(ev.target.result);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function showModal(src) {
+    const modal = document.getElementById('caption-modal');
+    document.getElementById('modal-preview').src = src;
+    document.getElementById('caption-input').value = '';
+    modal.classList.add('open');
+    setTimeout(() => document.getElementById('caption-input').focus(), 100);
+  }
+
+  document.getElementById('save-photo-btn').onclick = () => {
+    if (!pendingFile) return;
+    const caption = document.getElementById('caption-input').value.trim();
+    photos.push({ src: pendingFile.src, caption });
+    savePhotos();
+    renderGallery();
+    closeModal();
+    processNextFile(pendingFile.allFiles, pendingFile.nextIndex);
+    pendingFile = null;
+  };
+
+  document.getElementById('cancel-btn').onclick = () => {
+    closeModal();
+    pendingFile = null;
+  };
+
+  document.getElementById('modal-close').onclick = () => {
+    closeModal();
+    pendingFile = null;
+  };
+
+  document.getElementById('caption-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('save-photo-btn').click();
+    if (e.key === 'Escape') document.getElementById('cancel-btn').click();
+  });
+
+  document.getElementById('caption-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('caption-modal')) {
+      closeModal(); pendingFile = null;
+    }
+  });
+
+  function closeModal() {
+    document.getElementById('caption-modal').classList.remove('open');
+    document.getElementById('modal-preview').src = '';
+  }
+
+  // Init
+  loadPhotos();
+  renderGallery();
+</script>
+</body>
+</html>
